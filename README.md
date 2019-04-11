@@ -100,4 +100,6 @@ def predict(self, X, coef,len_0):
         return X_p
 ```
 That's all,thank you 
+
+
 [code](https://www.kaggle.com/chizhu2018/final-submit-two-10th-solution-private-0-442) is here 
