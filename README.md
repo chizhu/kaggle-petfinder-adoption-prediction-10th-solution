@@ -55,8 +55,7 @@ get multi-classify result and optimize  it:
 sum([0,1,2,3,4]*prob_matrix)
 ```python
 class_list=[0,1,2,3,4]
-    pred_test_y=np.array([sum(pred_test_y[ix]*class_list) for
-                               ix in range(len(pred_test_y[:,0]))]) 
+pred_test_y=np.array([sum(pred_test_y[ix]*class_list) for ix in range(len(pred_test_y[:,0]))]) 
 ```
 ### features two
 In the early competition, I forked from the public kernel（lb 0.444）
@@ -99,7 +98,3 @@ def predict(self, X, coef,len_0):
                 X_p[i] = 4
         return X_p
 ```
-That's all,thank you 
-
-
-[code](https://www.kaggle.com/chizhu2018/final-submit-two-10th-solution-private-0-442) is here 
