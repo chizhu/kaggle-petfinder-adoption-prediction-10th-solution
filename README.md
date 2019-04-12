@@ -49,7 +49,7 @@ We have 4 group features:
 * 7)state features (external data)
 * state population density
 * state_rank(according to state population density)
-* 8)mean target encode with breed(breed=breed1+breed2) boost 0.007(from 0.463 to 0.470)
+* 8)mean target encode with breed(breed=breed1+breed2) **boost 0.007(from 0.463 to 0.470)**
 * 9)linear model oof
 * use 1-7 features to build some leaner model ,get linear model oof.
 
@@ -62,11 +62,11 @@ class_list=[0,1,2,3,4]
 pred_test_y=np.array([sum(pred_test_y[ix]*class_list) for ix in range(len(pred_test_y[:,0]))]) 
 ```
 ### features two
-In the early competition, I forked from the public kernel（lb 0.444）
+In the early competition, I forked from the public kernel **（lb 0.444）**
 ### features three @zhouqingsongct
 use featuretools auto extract features 
 ### features four 
-from my teammate @amgis3(lb 0.470)
+from my teammate @amgis3 **(lb 0.470)**
 ## MODEL
 and we stacking them with these models:
 * LGB *6(multi-classify+regression)
@@ -76,13 +76,13 @@ and we stacking them with these models:
 
 ### NN @gmhost
 we do not use public Embeddings.we just use train+test desc to pretain a new w2v model(think of that are many chinese and Malay.)
-maybe we are wrong  our  best nn is near  lb 0.44 
+maybe we are wrong , our  best nn is only  near  **lb 0.44 **
 
 ## STRUCTURES
 ![img](https://github.com/chizhu/kaggle-petfinder-adoption-prediction-10th-solution/blob/master/img.jpg)
 
 ### QWK-optR
-The open source optR predicts very few zeros, so I manually divide the smallest part of the value to 0 (0.95*LEN_0) (len_0 is the size of 0 in trainset)
+The open source optR predicts very few zeros, so I manually divide the smallest part of the value to 0 **(0.95*LEN_0) **(len_0 is the size of 0 in trainset)
 ```python
 
 def predict(self, X, coef,len_0):
