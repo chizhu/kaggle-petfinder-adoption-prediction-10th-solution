@@ -1,8 +1,11 @@
 # kaggle-petfinder-adoption-prediction-10th-solution
 kaggle-petfinder-adoption-prediction-10th-solution
-[leaderboard](https://www.kaggle.com/c/petfinder-adoption-prediction/leaderboard)
-[kernel](https://www.kaggle.com/chizhu2018/final-submit-two-10th-solution-private-0-442?scriptVersionId=12114589)
-[discuss](https://www.kaggle.com/c/petfinder-adoption-prediction/discussion/88995#latest-515128)
+
+----
+
+【[leaderboard](https://www.kaggle.com/c/petfinder-adoption-prediction/leaderboard)】
+【[kernel](https://www.kaggle.com/chizhu2018/final-submit-two-10th-solution-private-0-442?scriptVersionId=12114589)】
+【[discuss](https://www.kaggle.com/c/petfinder-adoption-prediction/discussion/88995#latest-515128)】
 
 #10th Solution Summary
 
