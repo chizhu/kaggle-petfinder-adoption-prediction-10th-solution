@@ -1,12 +1,9 @@
 import json
-
 import scipy as sp
 import pandas as pd
 import numpy as np
-
 from functools import partial
 from math import sqrt
-
 from sklearn.metrics import cohen_kappa_score, mean_squared_error,log_loss
 from sklearn.metrics import confusion_matrix as sk_cmatrix
 from sklearn.model_selection import StratifiedKFold,train_test_split,KFold,GroupKFold,StratifiedShuffleSplit
@@ -67,6 +64,7 @@ from keras.utils import to_categorical
 from itertools import product
 import random as rn
 import os
+
 os.environ['PYTHONHASHSEED'] = '0'
 np.random.seed(369)
 rn.seed(369)
@@ -75,7 +73,6 @@ img_size = 256
 batch_size = 16
 embed_size=128
 print(os.listdir("../input"))
-
 stops = {x: 1 for x in stopwords.words('english')}
 start_time=time.time()
 
@@ -98,11 +95,8 @@ class MeanEncoder:
                           'regionidneighborhood', 'regionidzip'],
                 target_type='regression'
                 )
-
         X = mean_encoder.fit_transform(X, pd.Series(y))
         X_test = mean_encoder.transform(X_test)
-
-
         """
 
         self.categorical_features = categorical_features
@@ -205,7 +199,6 @@ class MeanEncoder:
                     X_new[nf_name] += X_new[[variable]].join(col_avg_y, on=variable).fillna(prior, inplace=False)[
                         nf_name]
                 X_new[nf_name] /= self.n_splits
-
         return X_new
 
 def get_embedding_matrix(word_index,embed_size=embed_size, Emed_path="w2v_128.txt"):
@@ -226,7 +219,6 @@ def get_embedding_matrix(word_index,embed_size=embed_size, Emed_path="w2v_128.tx
             count += 1
     return embedding_matrix
     
-
 class AttentionWeightedAverage(Layer):
     """
     Computes a weighted average of the different channels across timesteps.
@@ -412,8 +404,6 @@ class Capsule(Layer):
 
     def compute_output_shape(self, input_shape):
         return (None, self.num_capsule, self.dim_capsule)
-    
-
 class Attention(Layer):
     def __init__(self, step_dim,
                  W_regularizer=None, b_regularizer=None,
@@ -623,9 +613,7 @@ def get_class_bounds(y, y_pred, N=5, class0_fraction=-1):
 
 def run_cv_model(train, test, target, model_fn, params={}, eval_fn=None, label='model'):
     kf = StratifiedKFold(n_splits=5, random_state=1017, shuffle=True)
-#     kf = GroupKFold(n_splits=5)
-#     fold_splits = kf.split(train, target,group)
-#     kf = StratifiedShuffleSplit(n_splits=10, test_size=0.45,  random_state=1017)
+
     fold_splits = kf.split(train, target)
     folds=5
     cv_scores = []
@@ -796,8 +784,6 @@ def get_feat1():
     train_data["Description"] = train_data["Description"].apply(lambda x: clean_text(x))
     test_data["Description"] = test_data["Description"].apply(lambda x: clean_text(x))
     
-    
-
     eng_stopwords = set(stopwords.words("english"))
     
     # ## Number of words in the text ##
@@ -820,28 +806,10 @@ def get_feat1():
     train_data["num_punctuations"] =train_data['Description'].apply(lambda x: len([c for c in str(x) if c in string.punctuation]) )
     test_data["num_punctuations"] =test_data['Description'].apply(lambda x: len([c for c in str(x) if c in string.punctuation]) )
     
-    # ## Number of title case words in the text ##
-    # train_data["num_words_upper"] = train_data["Description"].apply(lambda x: len([w for w in str(x).split() if w.isupper()]))
-    # test_data["num_words_upper"] = test_data["Description"].apply(lambda x: len([w for w in str(x).split() if w.isupper()]))
-    
-    # ## Number of title case words in the text ##
-    # train_data["num_words_title"] = train_data["Description"].apply(lambda x: len([w for w in str(x).split() if w.istitle()]))
-    # test_data["num_words_title"] = test_data["Description"].apply(lambda x: len([w for w in str(x).split() if w.istitle()]))
-    
     # ## Average length of the words in the text ##
     train_data["mean_word_len"] = train_data["Description"].apply(lambda x: np.mean([len(w) for w in str(x).split()]))
     test_data["mean_word_len"] = test_data["Description"].apply(lambda x: np.mean([len(w) for w in str(x).split()]))
-    
-    # # train_data['num_vs_len']=train_data['num_punctuations']/train_data['num_chars']
-    # # test_data['num_vs_len']=test_data['num_punctuations']/test_data['num_chars']
-    
-    # # train_data['up_vs_len'] = train_data['num_words_upper'] / train_data['num_words']
-    # # test_data['up_vs_len'] = test_data['num_words_upper'] / test_data['num_words']
-    
-    # # train_data['senten_cnt']=train_data["Description"].apply(lambda x:len(str(x).split(".")),1)
-    # # test_data['senten_cnt']=test_data["Description"].apply(lambda x:len(str(x).split(".")),1)
-    
-    
+      
     def deal_desc(df):
         if df['lan_type']==1:
             return "null"
@@ -1095,8 +1063,6 @@ def get_feat1():
     tfv.fit(list(train_data['concat_text'].values)+list(test_data['concat_text'].values))
     X =  tfv.transform(train_data['concat_text'])
     X_test = tfv.transform(test_data['concat_text'])
-    
-    
 
     svd = NMF(n_components=5,random_state=100)
     svd.fit(vstack([X,X_test]))
@@ -1362,7 +1328,6 @@ def get_feat1():
     df_stack2['PetID']=data['PetID']
     for label in ["AdoptionSpeed"]:
         score = train_data[label]
-        
        
         ########################### SGD(随机梯度下降) ################################
         print('sgd stacking')
@@ -1407,10 +1372,6 @@ def get_feat1():
     
         df_stack2['tfidf_pac_classfiy_{}'.format(label)] = stack[:,0]
         
-    
-    
-        
-    
         ########################### FTRL ################################
         print('MultinomialNB stacking')
         stack_train = np.zeros((len(train_data),1))
@@ -1481,9 +1442,7 @@ def get_feat1():
     print('tfidf特征已保存\n')
     del stack,train_feature,test_feature,stack_train, stack_test,data
     gc.collect()
-    
-    
-    
+      
     train=pd.merge(train_data,oh_df,on="PetID",how="left")
     test=pd.merge(test_data,oh_df,on="PetID",how="left")
     
@@ -1548,28 +1507,7 @@ features = [x for x in train.columns if x not in ['Breed1',"breed","color","Bree
 
 label='AdoptionSpeed'
 ###model 1
-# params = {
-# #     'application': 'regression',
-#     'objective': 'multiclass', 
-#     "num_class":5,
-#           'boosting': 'gbdt',
-# #           'metric': 'rmse',
-#     'metric':{'multi_logloss',},
-#           'num_leaves': 80,
-#          'max_depth':9,
-#           'learning_rate': 0.01,
-#           'bagging_fraction': 0.90,
-#            "bagging_freq":3,
-#           'feature_fraction': 0.85,
-#           'min_split_gain': 0.01,
-#           'min_child_samples': 150,
-#           "lambda_l1": 0.1,
-#           'verbosity': -1,
-#           'early_stop': 100,
-#           'verbose_eval': 200,
-#           "data_random_seed":3,
-# #           "random_state":1017,
-#           'num_rounds': 10000}
+
 params = {
 #     'application': 'regression',
     'objective': 'multiclass', 
@@ -3592,54 +3530,6 @@ df_stack3['PetID']=data['PetID']
 for label in ["AdoptionSpeed"]:
     score = train_data[label]
     
-   
-    ########################### SGD(随机梯度下降) ################################
-    # print('sgd stacking')
-    # stack_train = np.zeros((len(train_data),1))
-    # stack_test = np.zeros((len(test_data),1))
-    # score_va = 0
-
-    # sk = StratifiedKFold( n_splits=5, random_state=1017,shuffle=True)
-    # for i, (tr, va) in enumerate(sk.split(train_feature, score)):
-    #     print('stack:%d/%d' % ((i + 1), n_folds))
-    #     sgd = SGDRegressor(random_state=1017,)
-    #     sgd.fit(train_feature[tr], score[tr])
-    #     score_va = sgd.predict(train_feature[va])
-    #     score_te = sgd.predict(test_feature)
-    #     print('得分' + str(mean_squared_error(score[va], sgd.predict(train_feature[va]))))
-    #     stack_train[va,0] = score_va
-    #     stack_test[:,0]+= score_te
-    # stack_test /= n_folds
-    # stack = np.vstack([stack_train, stack_test])
-#     df_stack3['tfidf_sgd_classfiy_{}'.format("feat1")] = stack[:,0]
-
-
-    ########################### pac(PassiveAggressiveClassifier) ################################
-    # print('PAC stacking')
-    # stack_train = np.zeros((len(train_data),1))
-    # stack_test = np.zeros((len(test_data),1))
-    # score_va = 0
-
-    # sk = StratifiedKFold( n_splits=5, random_state=1017,shuffle=True)
-    # for i, (tr, va) in enumerate(sk.split(train_feature, score)):
-    #     print('stack:%d/%d' % ((i + 1), n_folds))
-    #     pac = PassiveAggressiveRegressor(random_state=1017)
-    #     pac.fit(train_feature[tr], score[tr])
-    #     score_va = pac.predict(train_feature[va])
-    #     score_te = pac.predict(test_feature)
-      
-    #     print('得分' + str(mean_squared_error(score[va], pac.predict(train_feature[va]))))
-    #     stack_train[va,0] = score_va
-    #     stack_test[:,0] += score_te
-    # stack_test /= n_folds
-    # stack = np.vstack([stack_train, stack_test])
-
-#     df_stack3['tfidf_pac_classfiy_{}'.format("feat1")] = stack[:,0]
-    
-
-
-    
-
     ########################### FTRL ################################
     print('MultinomialNB stacking')
     stack_train = np.zeros((len(train_data),1))
@@ -3684,27 +3574,6 @@ for label in ["AdoptionSpeed"]:
 
     df_stack3['tfidf_ridge_classfiy_{}'.format("feat1")] = stack[:,0]
     
-    ############################ Linersvc(LinerSVC) ################################
-    # print('LinerSVC stacking')
-    # stack_train = np.zeros((len(train_data),1))
-    # stack_test = np.zeros((len(test_data),1))
-    # score_va = 0
-
-    # sk = StratifiedKFold( n_splits=5, random_state=1017,shuffle=True)
-    # for i, (tr, va) in enumerate(sk.split(train_feature, score)):
-    #     print('stack:%d/%d' % ((i + 1), n_folds))
-    #     lsvc = LinearSVR(random_state=1017)
-    #     lsvc.fit(train_feature[tr], score[tr])
-    #     score_va = lsvc.predict(train_feature[va])
-    #     score_te = lsvc.predict(test_feature)
-       
-    #     print('得分' + str(mean_squared_error(score[va], lsvc.predict(train_feature[va]))))
-    #     stack_train[va,0] = score_va
-    #     stack_test[:,0] += score_te
-    # stack_test /= n_folds
-    # stack = np.vstack([stack_train, stack_test])
-
-#     df_stack3['tfidf_lsvc_classfiy_{}'.format("feat1")] = stack[:,0]
 del stack,stack_train, stack_test,train_feature,test_feature
 gc.collect()   
 # df_stack.to_csv('graph_tfidf_classfiy.csv', index=None, encoding='utf8')
@@ -3726,54 +3595,6 @@ df_stack4 = pd.DataFrame()
 df_stack4['PetID']=data['PetID']
 for label in ["AdoptionSpeed"]:
     score = train_data[label]
-    
-   
-    ########################### SGD(随机梯度下降) ################################
-    # print('sgd stacking')
-    # stack_train = np.zeros((len(train_data),1))
-    # stack_test = np.zeros((len(test_data),1))
-    # score_va = 0
-
-    # sk = StratifiedKFold( n_splits=5, random_state=1017,shuffle=True)
-    # for i, (tr, va) in enumerate(sk.split(train_feature, score)):
-    #     print('stack:%d/%d' % ((i + 1), n_folds))
-    #     sgd = SGDRegressor(random_state=1017,)
-    #     sgd.fit(train_feature[tr], score[tr])
-    #     score_va = sgd.predict(train_feature[va])
-    #     score_te = sgd.predict(test_feature)
-    #     print('得分' + str(mean_squared_error(score[va], sgd.predict(train_feature[va]))))
-    #     stack_train[va,0] = score_va
-    #     stack_test[:,0]+= score_te
-    # stack_test /= n_folds
-    # stack = np.vstack([stack_train, stack_test])
-#     df_stack4['tfidf_sgd_classfiy_{}'.format("feat2")] = stack[:,0]
-
-
-    ########################### pac(PassiveAggressiveClassifier) ################################
-    # print('PAC stacking')
-    # stack_train = np.zeros((len(train_data),1))
-    # stack_test = np.zeros((len(test_data),1))
-    # score_va = 0
-
-    # sk = StratifiedKFold( n_splits=5, random_state=1017,shuffle=True)
-    # for i, (tr, va) in enumerate(sk.split(train_feature, score)):
-    #     print('stack:%d/%d' % ((i + 1), n_folds))
-    #     pac = PassiveAggressiveRegressor(random_state=1017)
-    #     pac.fit(train_feature[tr], score[tr])
-    #     score_va = pac.predict(train_feature[va])
-    #     score_te = pac.predict(test_feature)
-      
-    #     print('得分' + str(mean_squared_error(score[va], pac.predict(train_feature[va]))))
-    #     stack_train[va,0] = score_va
-    #     stack_test[:,0] += score_te
-    # stack_test /= n_folds
-    # stack = np.vstack([stack_train, stack_test])
-
-#     df_stack4['tfidf_pac_classfiy_{}'.format("feat2")] = stack[:,0]
-    
-
-
-    
 
     ########################### FTRL ################################
     print('MultinomialNB stacking')
@@ -3819,138 +3640,10 @@ for label in ["AdoptionSpeed"]:
 
     df_stack4['tfidf_ridge_classfiy_{}'.format("feat2")] = stack[:,0]
     
-    ############################ Linersvc(LinerSVC) ################################
-    # print('LinerSVC stacking')
-    # stack_train = np.zeros((len(train_data),1))
-    # stack_test = np.zeros((len(test_data),1))
-    # score_va = 0
-
-    # sk = StratifiedKFold( n_splits=5, random_state=1017,shuffle=True)
-    # for i, (tr, va) in enumerate(sk.split(train_feature, score)):
-    #     print('stack:%d/%d' % ((i + 1), n_folds))
-    #     lsvc = LinearSVR(random_state=1017)
-    #     lsvc.fit(train_feature[tr], score[tr])
-    #     score_va = lsvc.predict(train_feature[va])
-    #     score_te = lsvc.predict(test_feature)
-       
-    #     print('得分' + str(mean_squared_error(score[va], lsvc.predict(train_feature[va]))))
-    #     stack_train[va,0] = score_va
-    #     stack_test[:,0] += score_te
-    # stack_test /= n_folds
-    # stack = np.vstack([stack_train, stack_test])
-
-#     df_stack4['tfidf_lsvc_classfiy_{}'.format("feat2")] = stack[:,0]
 del stack,stack_train, stack_test,train_feature,test_feature
 gc.collect()   
-# df_stack.to_csv('graph_tfidf_classfiy.csv', index=None, encoding='utf8')
 print('tfidf特征已保存\n')
 
-# wb = wordbatch.WordBatch(normalize_text, extractor=(WordBag, {"hash_ngrams": 2,
-#                                                               "hash_ngrams_weights": [1.5, 1.0],
-#                                                               "hash_size": 2 ** 29,
-#                                                               "norm": None,
-#                                                               "tf": 'binary',
-#                                                               "idf": None,
-#                                                               }), procs=8)
-# x_train = wb.fit_transform(train2['Description'])
-# x_test = wb.transform(test2['Description'])
-
-################
-# Remove features with document frequency <=100
-#@eg:1)
-#mask = np.array(np.clip(sparse_merge.getnnz(axis=0) - 100, 0, 1), dtype=bool)
-#sparse_merge = sparse_merge[:, mask]
-#@eg:2)
-#mask
-#mask = np.where(X_param1_train.getnnz(axis=0) > 3)[0]
-#X_param1_train = X_param1_train[:, mask]
-################
-# mask = np.array(np.clip(x_train.getnnz(axis=0) - 3, 0, 1), dtype=bool)
-# x_train=x_train[:,mask]
-# x_test=x_test[:,mask]
-
-# sk = StratifiedKFold( n_splits=5, random_state=1017,shuffle=True)
-# stack_train = np.zeros((len(train_data)))
-# stack_test = np.zeros((len(test_data)))
-# print("FTRL...")
-# n_fold=5
-# for i, (tr, va) in enumerate(sk.split(x_train, train_data['AdoptionSpeed'])):
-#     print("FOLD | {}/{}".format(i+1,n_fold))
-#     clf=  FTRL(alpha=0.01, beta=0.1, L1=0.00001, L2=1.0, D=x_train.shape[1], iters=50, inv_link="identity", threads=1)
-#     clf.fit(x_train[tr],train_data['AdoptionSpeed'][tr])
-#     score_va = clf.predict(x_train[va])
-#     score_te = clf.predict(x_test)
-#     stack_train[va] = score_va
-#     stack_test += score_te
-# stack_test /= n_fold
-
-# train_data['FTRL_pred']=stack_train
-# test_data['FTRL_pred']=stack_test
-# print("Ridge...")
-# stack_train = np.zeros((len(train_data)))
-# stack_test = np.zeros((len(test_data)))
-# for i, (tr, va) in enumerate(sk.split(x_train, train_data['AdoptionSpeed'])):
-#     print("FOLD | {}/{}".format(i+1,n_fold))
-#     clf= Ridge(solver="sag", fit_intercept=True, random_state=42, alpha=30)
-#     clf.fit(x_train[tr],train_data['AdoptionSpeed'][tr])
-#     score_va = clf.predict(x_train[va])
-#     score_te = clf.predict(x_test)
-#     stack_train[va] = score_va
-#     stack_test += score_te
-# stack_test /= n_fold
-
-# train_data['ridge_pred']=stack_train
-# test_data['ridge_pred']=stack_test
-
-# print("LinearSVR...")
-# stack_train = np.zeros((len(train_data)))
-# stack_test = np.zeros((len(test_data)))
-# for i, (tr, va) in enumerate(sk.split(x_train, train_data['AdoptionSpeed'])):
-#     print("FOLD | {}/{}".format(i+1,n_fold))
-#     clf= LinearSVR(random_state=1017)
-#     clf.fit(x_train[tr],train_data['AdoptionSpeed'][tr])
-#     score_va = clf.predict(x_train[va])
-#     score_te = clf.predict(x_test)
-#     stack_train[va] = score_va
-#     stack_test += score_te
-# stack_test /= n_fold
-
-# train_data['svr_pred']=stack_train
-# test_data['svr_pred']=stack_test
-
-# print("pac...")
-# stack_train = np.zeros((len(train_data)))
-# stack_test = np.zeros((len(test_data)))
-# for i, (tr, va) in enumerate(sk.split(x_train, train_data['AdoptionSpeed'])):
-#     print("FOLD | {}/{}".format(i+1,n_fold))
-#     clf= PassiveAggressiveRegressor(random_state=1017)
-#     clf.fit(x_train[tr],train_data['AdoptionSpeed'][tr])
-#     score_va = clf.predict(x_train[va])
-#     score_te = clf.predict(x_test)
-#     stack_train[va] = score_va
-#     stack_test += score_te
-# stack_test /= n_fold
-
-# train_data['pac_pred']=stack_train
-# test_data['pac_pred']=stack_test
-
-# print("sgd...")
-# stack_train = np.zeros((len(train_data)))
-# stack_test = np.zeros((len(test_data)))
-# for i, (tr, va) in enumerate(sk.split(x_train, train_data['AdoptionSpeed'])):
-#     print("FOLD | {}/{}".format(i+1,n_fold))
-#     clf= SGDRegressor(random_state=1017,)
-#     clf.fit(x_train[tr],train_data['AdoptionSpeed'][tr])
-#     score_va = clf.predict(x_train[va])
-#     score_te = clf.predict(x_test)
-#     stack_train[va] = score_va
-#     stack_test += score_te
-# stack_test /= n_fold
-
-# train_data['sgd_pred']=stack_train
-# test_data['sgd_pred']=stack_test
-
-# del x_train,x_test,stack_train,stack_test
 del train2,test2
 gc.collect()
 
@@ -4114,13 +3807,6 @@ def feat4_model():
         temp = data[['PetID']].merge(meta_1,how='left',on='PetID')[meta_cols_0].fillna(-1)
         fea_data = pd.concat([fea_data,temp],axis=1)[['PetID']+num_cols_0+sent_cols_0+meta_cols_0+cat_cols_0]
         
-    #     temp = meta_1.pivot(index='PetID',columns='label_descriptions',values='label_scores')
-    #     temp = meta_data.loc[meta_data['PicID'].isin(['1']),:].groupby(['PetID','label_descriptions'])['label_scores'].max().reset_index()
-    #     temp = temp.pivot(index='PetID',columns='label_descriptions',values='label_scores')
-    #     temp.columns = [i.replace(' ','_') + '_scores' for i in temp.columns]
-    #     fea_data = fea_data.merge(temp,how='left',on='PetID')
-        
-        
         for i in ['Age','MaturitySize','FurLength','Health',
                   'Fee','VideoAmt','PhotoAmt',
                   'Breed2','Color2','Color3']:
@@ -4149,10 +3835,6 @@ def feat4_model():
         fea_data[['rescuer_type1_cnt','rescuer_type2_cnt']] = temp[['rescuer_type1_cnt','rescuer_type2_cnt']] 
         fea_data['rescuer_type1_rate']= fea_data['rescuer_type1_cnt'] / fea_data['rescuer_cnt']
         
-    # #     temp = data.groupby(['RescuerID','State'])['PetID'].count() / data_tr.groupby(['State'])['PetID'].count()
-    # #     temp = temp.rename('Rescuer_State_rate').reset_index().drop('State',axis=1)
-    # #     fea_data['Rescuer_State_rate']= data_tr[['RescuerID']].merge(temp,how='left',on='RescuerID')['Rescuer_State_rate']
-        
         # Breed
         temp = data_tr.groupby(['Breed1'])['PetID'].count().rename('Breed1_cnt').reset_index()
         temp = data[['Breed1']].merge(temp,how='left',on='Breed1')   
@@ -4164,12 +3846,7 @@ def feat4_model():
         temp = data[['Breed1']].merge(temp,how='left',on='Breed1') 
         fea_data['Breed1_Fee_avg'] = temp['Breed1_Fee_avg']
         fea_data['Breed1_Fee_avg_diff'] = fea_data['Fee_avg'] - fea_data['Breed1_Fee_avg']
-        
-    
-        
-        
-        
-        
+       
         # State
         
         temp = data_tr.groupby(['State','Type'])['PetID'].count().rename('state_type_cnt').reset_index()
@@ -4180,8 +3857,7 @@ def feat4_model():
         temp['state_type2_cnt_rank'] = temp['state_type2_cnt_rank'].rank()
         temp = data[['State']].merge(temp,how='left',on='State')
         fea_data[['state_type1_cnt_rank','state_type2_cnt_rank']] = temp[['state_type1_cnt_rank','state_type2_cnt_rank']] 
-        
-        
+       
         
         if data_source == 'train':
             label = data['AdoptionSpeed'].values
@@ -4226,23 +3902,16 @@ def feat4_model():
         fea_data[['rescuer_type1_cnt','rescuer_type2_cnt']] = temp[['rescuer_type1_cnt','rescuer_type2_cnt']] 
         fea_data['rescuer_type1_rate']= fea_data['rescuer_type1_cnt'] / fea_data['rescuer_cnt']
         
-      
         # Breed
         temp = data_tr.groupby(['Breed1'])['PetID'].count().rename('Breed1_cnt').reset_index()
         temp = data[['Breed1']].merge(temp,how='left',on='Breed1')   
         fea_data['Breed1_cnt'] = temp['Breed1_cnt']
-        
         
         data_tr['Fee_avg'] = data_tr['Fee'] / data_tr['Quantity']
         temp = data_tr.groupby(['Breed1'])['Fee_avg'].mean().rename('Breed1_Fee_avg').reset_index()
         temp = data[['Breed1']].merge(temp,how='left',on='Breed1') 
         fea_data['Breed1_Fee_avg'] = temp['Breed1_Fee_avg']
         fea_data['Breed1_Fee_avg_diff'] = fea_data['Fee_avg'] - fea_data['Breed1_Fee_avg']
-        
-    
-        
-        
-        
         
         # State
         
@@ -4258,8 +3927,7 @@ def feat4_model():
         dummy_fea = pd.get_dummies(data[cat_cols_0],columns=cat_cols_0)
         fea_data = pd.concat([fea_data,dummy_fea],axis=1)   
         fea_data['no_name'] = (data['Name'].isnull() | data['Name'].str.contains('No Name')).fillna(1).astype(int)
-        
-        
+       
         if data_source == 'train':
             label = data['AdoptionSpeed'].values
         else:
@@ -4373,8 +4041,6 @@ def feat4_model():
     gc.collect()
     
     #####################################################
-    
-    
     
     desc_vec = TfidfVectorizer(ngram_range=(1,4),
                                min_df=3, max_df=0.9, 
@@ -4594,15 +4260,6 @@ vv['cat2']=cat2_train
 vv['nn1']=nn1_train
 vv['nn2']=nn2_train
 vv['nn3']=nn3_train
-# vv['ridge_pred']=train_data['ridge_pred']
-# vv['FTRL_pred']=train_data['FTRL_pred']
-# vv['svr_pred']=train_data['svr_pred']
-# vv['pac_pred']=train_data['pac_pred']
-# vv['sgd_pred']=train_data['sgd_pred']
-# vv['breed1_pred']=breed_encode_tr['Breed1_str_pred']
-# vv['breed_pred']=breed_encode_tr['breed_pred']
-# vv = pd.merge(vv,df_stack1,on='PetID',how="left")
-# vv = pd.merge(vv,df_stack2,on='PetID',how="left")
 vv = pd.merge(vv,df_stack3,on='PetID',how="left")
 vv = pd.merge(vv,df_stack4,on='PetID',how="left")
 vv['AdoptionSpeed']=train_data['AdoptionSpeed']
@@ -4624,15 +4281,6 @@ sub['cat2']=cat2_test
 sub['nn1']=nn1_test
 sub['nn2']=nn2_test
 sub['nn3']=nn3_test
-# sub['ridge_pred']=test_data['ridge_pred']
-# sub['FTRL_pred']=test_data['FTRL_pred']
-# sub['svr_pred']=test_data['svr_pred']
-# sub['pac_pred']=test_data['pac_pred']
-# sub['sgd_pred']=test_data['sgd_pred']
-# sub['breed1_pred']=breed_encode_te['Breed1_str_pred']
-# sub['breed_pred']=breed_encode_te['breed_pred']
-# sub = pd.merge(sub,df_stack1,on='PetID',how="left")
-# sub = pd.merge(sub,df_stack2,on='PetID',how="left")
 sub = pd.merge(sub,df_stack3,on='PetID',how="left")
 sub = pd.merge(sub,df_stack4,on='PetID',how="left")
 
