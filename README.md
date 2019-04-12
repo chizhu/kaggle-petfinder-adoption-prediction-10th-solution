@@ -67,6 +67,18 @@ In the early competition, I forked from the public kernel **（lb 0.444）**
 use featuretools auto extract features 
 ### features four 
 from my teammate @amgis3 **(lb 0.470)**
+* 67 manual features (details see the code of dataprocess in the part of feat4model)
+* mean target encode with breed
+* densenet121 extract img features + pca
+* description -> tfidf(ngram=(1,4)) select top 10k by chi2
+* description -> tfidf(ngram=(1,4)) select top 10k by chi2 -> svd
+* breed/color/state -> tfidf(ngram=1)
+* breed/color/state -> tfidf(ngram=1) -> svd
+* labelalldescriptions from image metadata -> tfidf(ngram=1)
+* oof from ridge model
+### Validation Strategy
+* StratifiedKFold by the target is used in the lgb model;
+* GroupKFold by the RescuerID is used in the ridge model to get oof
 ## MODEL
 and we stacking them with these models:
 * LGB *6(multi-classify+regression)
