@@ -120,7 +120,8 @@ and we stacking them with these models:
 * NN *3(multi-classify+regression)
 * linear model(regression)
 
-### NN @gmhost
+### NN @gmhost (NN structures reference to [NN](https://www.kaggle.com/c/avito-demand-prediction/discussion/59880#latest-450523))
+![img]()
 we do not use public Embeddings.we just use train+test desc to pretain a new w2v model(think of that are many chinese and Malay.)
 maybe we are wrong , our  best nn is only  near  **lb 0.44**
 
