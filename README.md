@@ -9,7 +9,7 @@ kaggle-petfinder-adoption-prediction-10th-solution
 
 * [discuss](https://www.kaggle.com/c/petfinder-adoption-prediction/discussion/88995#latest-515128)
 
-#10th Solution Summary
+# 10th Solution Summary
 
 First of all, thanks to Petfinder.my and kaggle for hosting this great competition. And congratulations to the winners!Thanks to my teammates for their efforts.
 Here is our solution.
