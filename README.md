@@ -8,7 +8,7 @@ kaggle-petfinder-adoption-prediction-10th-solution
 
 First of all, thanks to Petfinder.my and kaggle for hosting this great competition. And congratulations to the winners!Thanks to my teammates for their efforts.
 Here is our solution.
-## FE
+## FEATURE ENGINEER
 As our team name,Stacking is all you need.
 We have 4 group features:
 ### features one:
@@ -53,7 +53,7 @@ We have 4 group features:
 * 9)linear model oof
 * use 1-7 features to build some leaner model ,get linear model oof.
 
-with thease 101 dim features and multi-classify LGB (BEST SINGLE MODEL LB 0.471)
+with thease 101 dim features and multi-classify LGB **(BEST SINGLE MODEL LB 0.471)**
 #### note:
 get multi-classify result and optimize  it:
 sum([0,1,2,3,4]*prob_matrix)
