@@ -76,13 +76,13 @@ and we stacking them with these models:
 
 ### NN @gmhost
 we do not use public Embeddings.we just use train+test desc to pretain a new w2v model(think of that are many chinese and Malay.)
-maybe we are wrong , our  best nn is only  near  **lb 0.44 **
+maybe we are wrong , our  best nn is only  near  **lb 0.44**
 
 ## STRUCTURES
 ![img](https://github.com/chizhu/kaggle-petfinder-adoption-prediction-10th-solution/blob/master/img.jpg)
 
 ### QWK-optR
-The open source optR predicts very few zeros, so I manually divide the smallest part of the value to 0 **(0.95*LEN_0) **(len_0 is the size of 0 in trainset)
+The open source optR predicts very few zeros, so I manually divide the smallest part of the value to 0 **(0.95*LEN_0)** (len_0 is the size of 0 in trainset)
 ```python
 
 def predict(self, X, coef,len_0):
