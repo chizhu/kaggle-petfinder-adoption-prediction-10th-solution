@@ -59,7 +59,7 @@ We have 4 group features:
 * use 1-7 features to build some leaner model ,get linear model oof.
 
 with thease 101 dim features and multi-classify LGB **(BEST SINGLE MODEL LB 0.471)**
-#### note:
+#### NOTE:
 get multi-classify result and optimize  it:
 sum([0,1,2,3,4]*prob_matrix)
 ```python
@@ -120,8 +120,7 @@ and we stacking them with these models:
 * NN *3(multi-classify+regression)
 * linear model(regression)
 
-### NN @gmhost (NN structures reference to [NN](https://www.kaggle.com/c/avito-demand-prediction/discussion/59880#latest-450523))
-![img]()
+### NN @gmhost (NN structures reference to [THREAD](https://www.kaggle.com/c/avito-demand-prediction/discussion/59880#latest-450523))
 we do not use public Embeddings.we just use train+test desc to pretain a new w2v model(think of that are many chinese and Malay.)
 maybe we are wrong , our  best nn is only  near  **lb 0.44**
 
