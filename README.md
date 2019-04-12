@@ -5,7 +5,7 @@ kaggle-petfinder-adoption-prediction-10th-solution
 First of all, thanks to Petfinder.my and kaggle for hosting this great competition. And congratulations to the winners!Thanks to my teammates for their efforts.
 Here is our solution.
 ## General
-As my team name,Stacking is all you need.
+As our team name,Stacking is all you need.
 We have 4 group features:
 ### features one:
 * 1）clean breed
