@@ -65,6 +65,35 @@ pred_test_y=np.array([sum(pred_test_y[ix]*class_list) for ix in range(len(pred_t
 In the early competition, I forked from the public kernel **（lb 0.444）**
 ### features three @zhouqingsongct
 use featuretools auto extract features 
+```python
+es = ft.EntitySet(id='data_id')
+es = es.entity_from_dataframe(entity_id='PetID', dataframe=data,
+                                   index='PetID')
+    
+need_deal_columns = ['Age', 'Breed1', 'Breed2', 'Color1', 'Color2', 'Color3', 'Description',
+           'Dewormed', 'Fee', 'FurLength', 'Gender', 'Health', 'MaturitySize',
+           'Name', 'PhotoAmt', 'Quantity', 'RescuerID', 'State',
+           'Sterilized', 'Type', 'Vaccinated', 'VideoAmt']
+for i in need_deal_columns:
+    data_RescuerID = pd.DataFrame()
+    data_RescuerID[i] = list(data[i].unique())
+    es = es.entity_from_dataframe(entity_id=i, dataframe=data_RescuerID,
+                                   index=i)
+    cr = ft.Relationship( es[i][i],
+                        es['PetID'][i])
+    es = es.add_relationship(cr)
+        
+features, feature_names = ft.dfs(entityset=es, target_entity='PetID',
+                                     max_depth=3,verbose=True)
+    
+features = pd.merge(data[['PetID']], features.reset_index(), on='PetID', how='left')
+label_encode = LabelEncoder()
+for i in features.columns:
+    if features[i].dtype =="object":
+        features[i] = features[i].fillna('未知')
+        features[i] = list(map(str, features[i]))
+        features[i] = label_encode.fit_transform(features[i])
+```
 ### features four 
 from my teammate @amgis3 **(lb 0.470)**
 * 67 manual features (details see the code of dataprocess in the part of feat4model)
