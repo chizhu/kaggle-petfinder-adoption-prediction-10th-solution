@@ -1,10 +1,14 @@
 # kaggle-petfinder-adoption-prediction-10th-solution
 kaggle-petfinder-adoption-prediction-10th-solution
+[leaderboard](https://www.kaggle.com/c/petfinder-adoption-prediction/leaderboard)
+[kernel](https://www.kaggle.com/chizhu2018/final-submit-two-10th-solution-private-0-442?scriptVersionId=12114589)
+[discuss](https://www.kaggle.com/c/petfinder-adoption-prediction/discussion/88995#latest-515128)
 
+#10th Solution Summary
 
 First of all, thanks to Petfinder.my and kaggle for hosting this great competition. And congratulations to the winners!Thanks to my teammates for their efforts.
 Here is our solution.
-## General
+## FE
 As our team name,Stacking is all you need.
 We have 4 group features:
 ### features one:
@@ -63,7 +67,7 @@ In the early competition, I forked from the public kernel（lb 0.444）
 use featuretools auto extract features 
 ### features four 
 from my teammate @amgis3(lb 0.470)
-### models
+## MODEL
 and we stacking them with these models:
 * LGB *6(multi-classify+regression)
 * CAT *2(regression)
@@ -74,10 +78,10 @@ and we stacking them with these models:
 we do not use public Embeddings.we just use train+test desc to pretain a new w2v model(think of that are many chinese and Malay.)
 maybe we are wrong  our  best nn is near  lb 0.44 
 
-## structures
+## STRUCTURES
 ![img](https://github.com/chizhu/kaggle-petfinder-adoption-prediction-10th-solution/blob/master/img.jpg)
 
-### optR
+### QWK-optR
 The open source optR predicts very few zeros, so I manually divide the smallest part of the value to 0 (0.95*LEN_0) (len_0 is the size of 0 in trainset)
 ```python
 
